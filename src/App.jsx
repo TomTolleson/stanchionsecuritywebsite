@@ -388,8 +388,8 @@ function AboutPage({ setPage }) {
               <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 600, color: C.white, marginBottom: 24 }}>Tom Tolleson</h2>
               <div style={{ fontSize: 16, color: C.gray, lineHeight: 1.8 }}>
                 <p style={{ marginBottom: 16 }}>Tom Tolleson brings over 15 years of enterprise security and IT leadership across three of the most heavily regulated industries in America: healthcare, financial services, and defense.</p>
-                <p style={{ marginBottom: 16 }}>His career began in the United States Navy and Coast Guard, where he developed the discipline, security clearance experience, and mission-critical mindset that defines his approach to cybersecurity leadership today.</p>
-                <p style={{ marginBottom: 16 }}>From there, Tom Tolleson led enterprise IT and security programs at organizations including Aetna/CVS Health and Guardian Life, managing complex technology transformations while maintaining compliance with HIPAA, SOC 2, and defense security requirements.</p>
+                <p style={{ marginBottom: 16 }}>His career began in regulatory work as a contractor for the Social Security Adminsitration and the United States Navy, where he developed the discipline, security clearances, and mission-critical mindset that defines his approach to cybersecurity leadership today.He currently works with the United States Coast Guard Auxilliary</p>
+                <p style={{ marginBottom: 16 }}>From there, Tom Tolleson led enterprise IT and security programs at organizations including Aetna/CVS Health and AIG, managing complex technology transformations while maintaining compliance with HIPAA, SOC 2, and various security requirements.</p>
                 <p>Now, through Stanchion Security, he delivers that same level of strategic security leadership to organizations that need it most — on their terms and within their budget.</p>
               </div>
             </div>
