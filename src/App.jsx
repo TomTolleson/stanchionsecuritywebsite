@@ -385,11 +385,11 @@ function AboutPage({ setPage }) {
             <div>
               <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: C.accent, marginBottom: 12 }}>Founder</div>
               <GoldLine />
-              <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 600, color: C.white, marginBottom: 24 }}>Tom</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 600, color: C.white, marginBottom: 24 }}>Tom Tolleson</h2>
               <div style={{ fontSize: 16, color: C.gray, lineHeight: 1.8 }}>
-                <p style={{ marginBottom: 16 }}>Tom brings over 15 years of enterprise security and IT leadership across three of the most heavily regulated industries in America: healthcare, financial services, and defense.</p>
+                <p style={{ marginBottom: 16 }}>Tom Tolleson brings over 15 years of enterprise security and IT leadership across three of the most heavily regulated industries in America: healthcare, financial services, and defense.</p>
                 <p style={{ marginBottom: 16 }}>His career began in the United States Navy and Coast Guard, where he developed the discipline, security clearance experience, and mission-critical mindset that defines his approach to cybersecurity leadership today.</p>
-                <p style={{ marginBottom: 16 }}>From there, Tom led enterprise IT and security programs at organizations including Aetna/CVS Health and Guardian Life, managing complex technology transformations while maintaining compliance with HIPAA, SOC 2, and defense security requirements.</p>
+                <p style={{ marginBottom: 16 }}>From there, Tom Tolleson led enterprise IT and security programs at organizations including Aetna/CVS Health and Guardian Life, managing complex technology transformations while maintaining compliance with HIPAA, SOC 2, and defense security requirements.</p>
                 <p>Now, through Stanchion Security, he delivers that same level of strategic security leadership to organizations that need it most — on their terms and within their budget.</p>
               </div>
             </div>
@@ -399,7 +399,7 @@ function AboutPage({ setPage }) {
               <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 600, color: C.white, marginBottom: 24 }}>Credentials & Background</h3>
               {[
                 { label: "Certifications", value: "CompTIA Security+ · CISSP (in progress) · CPP (planned)" },
-                { label: "Military Service", value: "United States Navy · United States Coast Guard" },
+                { label: "Military/Government Contracting", value: "United States Navy · United States Coast Guard" },
                 { label: "Industry Experience", value: "Healthcare · Financial Services · Defense" },
                 { label: "Compliance Expertise", value: "HIPAA · SOC 2 · NIST · AI RMF · CMMC" },
                 { label: "Technology", value: "AWS · Azure · Enterprise Architecture · AI/LLM Systems" },
@@ -460,7 +460,7 @@ function ServicesPage({ setPage }) {
   const categories = [
     {
       label: "vCISO", title: "Virtual CISO Services",
-      intro: "Fractional security leadership calibrated to your organization's size, risk profile, and regulatory environment. Every engagement is led personally by Tom — not handed off to junior staff.",
+      intro: "Fractional security leadership calibrated to your organization's size, risk profile, and regulatory environment. Every engagement is led personally by Tom Tolleson — not handed off to junior staff.",
       tiers: [
         { name: "Essentials", price: "$3,500/mo", hours: "8–10 hrs/mo", features: ["Quarterly risk reviews & reporting", "Security policy maintenance", "Board & leadership briefings", "Incident escalation point of contact"] },
         { name: "Standard", price: "$8,000/mo", hours: "16–20 hrs/mo", features: ["Weekly security steering sessions", "Incident response planning & tabletops", "Vendor risk management program", "Compliance roadmap & audit prep", "Security awareness oversight"], popular: true },
@@ -630,7 +630,7 @@ function ContactPage() {
               <div style={{ background: C.cardBg, border: `1px solid ${C.accent}`, borderRadius: 8, padding: 48, textAlign: "center" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
                 <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 600, color: C.white, marginBottom: 12 }}>Message received.</h3>
-                <p style={{ fontSize: 16, color: C.gray, lineHeight: 1.7 }}>Thank you for reaching out. Tom will review your inquiry and respond within one business day.</p>
+                <p style={{ fontSize: 16, color: C.gray, lineHeight: 1.7 }}>Thank you for reaching out. Tom Tolleson will review your inquiry and respond within one business day.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
