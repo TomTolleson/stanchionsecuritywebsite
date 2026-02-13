@@ -399,7 +399,7 @@ function AboutPage({ setPage }) {
               <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 600, color: C.white, marginBottom: 24 }}>Credentials & Background</h3>
               {[
                 { label: "Certifications", value: "CompTIA Security+ · CISSP (in progress) · CPP (planned)" },
-                { label: "Military/Government Contracting", value: "United States Navy · United States Coast Guard" },
+                { label: "Military/Government Contracting", value: "United States Navy · Social Security Administration · United States Coast Guard" },
                 { label: "Industry Experience", value: "Healthcare · Financial Services · Defense" },
                 { label: "Compliance Expertise", value: "HIPAA · SOC 2 · NIST · AI RMF · CMMC" },
                 { label: "Technology", value: "AWS · Azure · Enterprise Architecture · AI/LLM Systems" },
