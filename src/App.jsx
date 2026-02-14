@@ -471,27 +471,27 @@ function ServicesPage({ setPage }) {
       label: "AI Security", title: "AI Security & Governance",
       intro: "Most organizations are deploying AI faster than they're governing it. We help you build the guardrails before — or alongside — the innovation, leveraging NIST AI RMF, ISO 42001, and OWASP LLM Top 10 frameworks.",
       tiers: [
-        { name: "AI Governance Assessment", price: "$20K–$35K", hours: "4–6 weeks", features: ["Complete AI use case inventory", "Risk classification & prioritization", "Gap analysis against NIST AI RMF", "Executive-ready findings report", "Remediation roadmap"] },
-        { name: "AI Policy Development", price: "$15K–$25K", hours: "4–8 weeks", features: ["Acceptable use policies for AI/LLMs", "Data handling & privacy frameworks", "Model risk management policies", "Third-party AI vendor evaluation criteria", "Employee training materials"], popular: true },
-        { name: "AI Governance Retainer", price: "$8K–$12K/mo", hours: "Ongoing", features: ["Continuous AI risk monitoring", "New use case security review", "Policy updates for evolving threats", "Regulatory tracking (EU AI Act, etc.)", "Board-level AI risk reporting"] },
+        { name: "AI Governance Assessment", hours: "4–6 weeks", features: ["Complete AI use case inventory", "Risk classification & prioritization", "Gap analysis against NIST AI RMF", "Executive-ready findings report", "Remediation roadmap"] },
+        { name: "AI Policy Development", hours: "4–8 weeks", features: ["Acceptable use policies for AI/LLMs", "Data handling & privacy frameworks", "Model risk management policies", "Third-party AI vendor evaluation criteria", "Employee training materials"], popular: true },
+        { name: "AI Governance Retainer", hours: "Ongoing", features: ["Continuous AI risk monitoring", "New use case security review", "Policy updates for evolving threats", "Regulatory tracking (EU AI Act, etc.)", "Board-level AI risk reporting"] },
       ]
     },
     {
       label: "Compliance", title: "Compliance Programs",
       intro: "We've built and maintained compliance programs at some of the largest organizations in healthcare and financial services. Now we bring that enterprise-grade methodology to the mid-market.",
       tiers: [
-        { name: "SOC 2 Readiness", price: "$15,000", hours: "4–8 weeks", features: ["Gap analysis against Trust Services Criteria", "Control mapping & documentation", "Remediation roadmap & prioritization", "Auditor coordination & prep"] },
-        { name: "HIPAA Risk Assessment", price: "$12K–$25K", hours: "4–6 weeks", features: ["Security Rule risk analysis", "Privacy Rule compliance review", "BAA inventory & assessment", "Remediation plan with timelines", "OCR audit preparation"], popular: true },
-        { name: "Full Program Buildout", price: "$25K–$50K", hours: "3–6 months", features: ["Complete policy & procedure suite", "Control implementation & testing", "Evidence collection systems", "Employee training program", "Ongoing compliance monitoring plan"] },
+        { name: "SOC 2 Readiness", hours: "4–8 weeks", features: ["Gap analysis against Trust Services Criteria", "Control mapping & documentation", "Remediation roadmap & prioritization", "Auditor coordination & prep"] },
+        { name: "HIPAA Risk Assessment", hours: "4–6 weeks", features: ["Security Rule risk analysis", "Privacy Rule compliance review", "BAA inventory & assessment", "Remediation plan with timelines", "OCR audit preparation"], popular: true },
+        { name: "Full Program Buildout", hours: "3–6 months", features: ["Complete policy & procedure suite", "Control implementation & testing", "Evidence collection systems", "Employee training program", "Ongoing compliance monitoring plan"] },
       ]
     },
     {
       label: "Assessments", title: "Security Assessments",
       intro: "Targeted evaluations that give you a clear picture of your security posture and a concrete plan to improve it.",
       tiers: [
-        { name: "Architecture Review", price: "$12K–$20K", hours: "2–4 weeks", features: ["Cloud infrastructure review (AWS/Azure)", "Network security assessment", "Identity & access management audit", "Findings report with priorities"] },
-        { name: "Incident Response Planning", price: "$12K–$18K", hours: "2–4 weeks", features: ["IR playbook development", "Tabletop exercise facilitation", "Communication plan templates", "Regulatory notification procedures", "Post-incident review framework"], popular: true },
-        { name: "Vendor Risk Program", price: "$7.5K–$12K", hours: "1–2 weeks", features: ["Third-party risk framework", "Vendor tiering methodology", "Security questionnaire development", "Risk assessment templates", "Ongoing monitoring recommendations"] },
+        { name: "Architecture Review", hours: "2–4 weeks", features: ["Cloud infrastructure review (AWS/Azure)", "Network security assessment", "Identity & access management audit", "Findings report with priorities"] },
+        { name: "Incident Response Planning", hours: "2–4 weeks", features: ["IR playbook development", "Tabletop exercise facilitation", "Communication plan templates", "Regulatory notification procedures", "Post-incident review framework"], popular: true },
+        { name: "Vendor Risk Program", hours: "1–2 weeks", features: ["Third-party risk framework", "Vendor tiering methodology", "Security questionnaire development", "Risk assessment templates", "Ongoing monitoring recommendations"] },
       ]
     },
   ];
