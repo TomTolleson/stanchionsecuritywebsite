@@ -697,7 +697,7 @@ function ContactPage() {
                 {[
                   { label: "Email", value: "tom@stanchionsecurity.com" },
                   { label: "Web", value: "stanchionsecurity.com" },
-                  { label: "LinkedIn", value: "linkedin.com/in/tom" },
+                  { label: "LinkedIn", value: "linkedin.com/in/tomtolleson" },
                   { label: "Response Time", value: "Within 1 business day" },
                 ].map((item, i) => (
                   <div key={i} style={{ marginBottom: i < 3 ? 16 : 0 }}>
