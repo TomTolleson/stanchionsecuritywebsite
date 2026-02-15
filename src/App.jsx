@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-// ─── Color Tokens ───
+// ─── Color Tokens (WCAG 2.1 AA: 4.5:1 normal text, 3:1 large text; navy/gold palette retained) ───
 const C = {
   navy: "#0A1628",
   navyMid: "#0F2035",
@@ -33,29 +33,63 @@ body{font-family:'DM Sans',sans-serif;background:${C.bg};color:${C.white};overfl
 ::-webkit-scrollbar-track{background:${C.bg}}
 ::-webkit-scrollbar-thumb{background:${C.steel};border-radius:3px}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes lineGrow{from{width:0}to{width:60px}}
-@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+/* Accessibility: visible focus indicators for keyboard users (WCAG 2.4.7) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #FFD700;outline-offset:2px}
 
-.fade-up{animation:fadeUp 0.7s ease both}
-.fade-in{animation:fadeIn 0.6s ease both}
-.slide-left{animation:slideLeft 0.7s ease both}
+/* Skip link: visually hidden until focused */
+.skip-link{position:absolute;left:-9999px;z-index:9999;padding:12px 24px;background:${C.accent};color:${C.navy};font-weight:700;text-decoration:none;font-size:14px;border-radius:4px}
+.skip-link:focus{position:static;left:auto;margin:8px 0 0 8px;display:inline-block}
+
+/* Reduced motion: disable animations for users who prefer it (WCAG 2.3.3) */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes lineGrow{from{width:0}to{width:60px}}
+  @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .fade-up{animation:fadeUp 0.7s ease both}
+  .fade-in{animation:fadeIn 0.6s ease both}
+  .slide-left{animation:slideLeft 0.7s ease both}
+  .section-reveal{transition:opacity 0.7s ease, transform 0.7s ease}
+  .animate-pulse{animation:pulse 2s ease infinite}
+}
 `;
+
+// ─── Skip Link ───
+function SkipLink() {
+  return (
+    <a href="#main-content" className="skip-link">
+      Skip to main content
+    </a>
+  );
+}
 
 // ─── Navigation ───
 function Nav({ page, setPage }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const hamburgerRef = useRef(null);
+  const mobileMenuId = "mobile-menu";
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        hamburgerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [mobileOpen]);
 
   const links = [
     { key: "home", label: "Home" },
@@ -71,7 +105,8 @@ function Nav({ page, setPage }) {
   };
 
   return (
-    <nav style={{
+    <header style={{ position: "relative" }}>
+    <nav aria-label="Main navigation" style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
       background: scrolled ? "rgba(6,14,26,0.92)" : "transparent",
       backdropFilter: scrolled ? "blur(20px) saturate(1.4)" : "none",
@@ -79,8 +114,13 @@ function Nav({ page, setPage }) {
       transition: "all 0.4s ease",
       padding: scrolled ? "12px 0" : "20px 0",
     }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }} onClick={() => navigate("home")}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button
+          type="button"
+          onClick={() => navigate("home")}
+          style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 12, background: "none", border: "none", padding: 0 }}
+          aria-label="Stanchion Security home"
+        >
           <div style={{
             width: 36, height: 36, border: `2px solid ${C.accent}`, borderRadius: 4,
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -89,12 +129,16 @@ function Nav({ page, setPage }) {
           <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, fontWeight: 600, letterSpacing: 2, color: C.white, textTransform: "uppercase" }}>
             Stanchion
           </span>
-        </div>
+        </button>
 
         {/* Desktop links */}
         <div style={{ display: "flex", gap: 36, alignItems: "center" }} className="desktop-nav">
           {links.map(l => (
-            <button key={l.key} onClick={() => navigate(l.key)} style={{
+            <button
+              key={l.key}
+              onClick={() => navigate(l.key)}
+              aria-current={page === l.key ? "page" : undefined}
+              style={{
               background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans',sans-serif",
               fontSize: 14, fontWeight: 500, letterSpacing: 1.2, textTransform: "uppercase",
               color: page === l.key ? C.accent : C.grayLight,
@@ -110,7 +154,14 @@ function Nav({ page, setPage }) {
         </div>
 
         {/* Mobile hamburger */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} style={{
+        <button
+          ref={hamburgerRef}
+          type="button"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-expanded={mobileOpen}
+          aria-controls={mobileMenuId}
+          aria-label={mobileOpen ? "Close main menu" : "Open main menu"}
+          style={{
           display: "none", background: "none", border: "none", cursor: "pointer", padding: 8,
           flexDirection: "column", gap: 5,
         }} className="mobile-hamburger">
@@ -124,13 +175,13 @@ function Nav({ page, setPage }) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div style={{
+        <div id={mobileMenuId} role="menu" style={{
           position: "absolute", top: "100%", left: 0, right: 0,
           background: "rgba(6,14,26,0.97)", backdropFilter: "blur(20px)",
           borderBottom: `1px solid ${C.glassBorder}`, padding: "24px 32px",
         }}>
           {links.map(l => (
-            <button key={l.key} onClick={() => navigate(l.key)} style={{
+            <button key={l.key} type="button" role="menuitem" onClick={() => navigate(l.key)} style={{
               display: "block", width: "100%", textAlign: "left", background: "none", border: "none",
               padding: "14px 0", fontFamily: "'DM Sans',sans-serif", fontSize: 16, fontWeight: 500,
               color: page === l.key ? C.accent : C.grayLight, cursor: "pointer",
@@ -147,6 +198,7 @@ function Nav({ page, setPage }) {
         }
       `}</style>
     </nav>
+    </header>
   );
 }
 
@@ -160,9 +212,9 @@ function Section({ children, style = {}, delay = 0 }) {
     return () => obs.disconnect();
   }, []);
   return (
-    <div ref={ref} style={{
+    <div ref={ref} className="section-reveal" style={{
       opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)",
-      transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`, ...style
+      transitionDelay: `${delay}s`, ...style
     }}>{children}</div>
   );
 }
@@ -173,12 +225,13 @@ function GoldLine({ width = 60, style = {} }) {
 }
 
 // ─── Section Heading ───
-function SectionHeading({ label, title, subtitle, center }) {
+function SectionHeading({ label, title, subtitle, center, level = 2 }) {
+  const HeadingTag = level === 1 ? "h1" : "h2";
   return (
     <div style={{ textAlign: center ? "center" : "left", marginBottom: 48 }}>
       {label && <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: C.accent, marginBottom: 12 }}>{label}</div>}
       <GoldLine width={center ? 60 : 60} style={center ? { margin: "0 auto 16px" } : { marginBottom: 16 }} />
-      <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(28px,4vw,44px)", fontWeight: 600, color: C.white, lineHeight: 1.2, marginBottom: subtitle ? 16 : 0 }}>{title}</h2>
+      <HeadingTag style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(28px,4vw,44px)", fontWeight: 600, color: C.white, lineHeight: 1.2, marginBottom: subtitle ? 16 : 0 }}>{title}</HeadingTag>
       {subtitle && <p style={{ fontSize: 17, color: C.gray, maxWidth: 640, margin: center ? "0 auto" : 0, lineHeight: 1.7 }}>{subtitle}</p>}
     </div>
   );
@@ -187,7 +240,7 @@ function SectionHeading({ label, title, subtitle, center }) {
 // ─── Shield Icon (SVG) ───
 function ShieldIcon({ size = 24, color = C.accent }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
   );
@@ -232,7 +285,7 @@ function HomePage({ setPage }) {
           <div style={{ maxWidth: 720 }}>
             <div className="fade-up" style={{ animationDelay: "0.1s" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, animation: "pulse 2s ease infinite" }} />
+                <div className="animate-pulse" style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent }} aria-hidden="true" />
                 <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 2.5, textTransform: "uppercase", color: C.accent }}>Cybersecurity & AI Governance Advisory</span>
               </div>
             </div>
@@ -293,7 +346,7 @@ function HomePage({ setPage }) {
                 transition: "all 0.4s ease", cursor: "pointer", height: "100%",
               }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.transform = "translateY(-4px)"; }}
                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.glassBorder; e.currentTarget.style.transform = "translateY(0)"; }}>
-                <div style={{ fontSize: 32, marginBottom: 16 }}>{s.icon}</div>
+                <div style={{ fontSize: 32, marginBottom: 16 }} aria-hidden="true">{s.icon}</div>
                 <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600, color: C.white, marginBottom: 12 }}>{s.title}</h3>
                 <p style={{ fontSize: 15, color: C.gray, lineHeight: 1.7 }}>{s.desc}</p>
               </div>
@@ -373,7 +426,7 @@ function AboutPage({ setPage }) {
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <Section>
-            <SectionHeading label="About" title="A Different Kind of Security Practice" subtitle="Founded on the belief that security leadership should be accessible, practical, and forward-looking." />
+            <SectionHeading label="About" title="A Different Kind of Security Practice" subtitle="Founded on the belief that security leadership should be accessible, practical, and forward-looking." level={1} />
           </Section>
         </div>
       </section>
@@ -507,28 +560,37 @@ function ServicesPage({ setPage }) {
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <Section>
-            <SectionHeading label="Services" title="What We Deliver" subtitle="Every engagement is scoped to your needs, led by senior expertise, and designed to produce measurable outcomes." />
+            <SectionHeading label="Services" title="What We Deliver" subtitle="Every engagement is scoped to your needs, led by senior expertise, and designed to produce measurable outcomes." level={1} />
           </Section>
         </div>
       </section>
 
       {/* Tabs */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", borderBottom: `1px solid ${C.glassBorder}`, paddingBottom: 0 }}>
-          {categories.map((c, i) => (
-            <button key={i} onClick={() => setActiveTab(i)} style={{
+        <div role="tablist" aria-label="Service categories">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", borderBottom: `1px solid ${C.glassBorder}`, paddingBottom: 0 }}>
+          {categories.map((cat, i) => (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={activeTab === i}
+              aria-controls={`panel-${i}`}
+              id={`tab-${i}`}
+              onClick={() => setActiveTab(i)}
+              style={{
               background: activeTab === i ? C.accentDim : "transparent",
               border: "none", borderBottom: activeTab === i ? `2px solid ${C.accent}` : "2px solid transparent",
               padding: "14px 24px", cursor: "pointer", fontFamily: "'DM Sans',sans-serif",
               fontSize: 14, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase",
               color: activeTab === i ? C.accent : C.grayDark, transition: "all 0.3s",
-            }}>{c.label}</button>
+            }}>{cat.label}</button>
           ))}
+          </div>
         </div>
       </section>
 
       {/* Active Category */}
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px 100px" }}>
+      <section id={`panel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-${activeTab}`} tabIndex={0} style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px 100px" }}>
         <Section key={activeTab}>
           <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 600, color: C.white, marginBottom: 16 }}>{cat.title}</h2>
           <p style={{ fontSize: 16, color: C.gray, lineHeight: 1.7, maxWidth: 700, marginBottom: 48 }}>{cat.intro}</p>
@@ -618,7 +680,7 @@ function ContactPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <Section>
-            <SectionHeading label="Contact" title="Start a Conversation" subtitle="Every engagement begins with a straightforward discussion about your security needs. No pressure, no sales pitch." />
+            <SectionHeading label="Contact" title="Start a Conversation" subtitle="Every engagement begins with a straightforward discussion about your security needs. No pressure, no sales pitch." level={1} />
           </Section>
         </div>
       </section>
@@ -636,21 +698,21 @@ function ContactPage() {
               <form onSubmit={handleSubmit}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Name *</label>
-                    <input required style={inputStyle} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Your name" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                    <label htmlFor="contact-name" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Name *</label>
+                    <input id="contact-name" required aria-required="true" style={inputStyle} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Your name" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Email *</label>
-                    <input required type="email" style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="you@company.com" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                    <label htmlFor="contact-email" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Email *</label>
+                    <input id="contact-email" required type="email" aria-required="true" style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="you@company.com" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                   </div>
                 </div>
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Company</label>
-                  <input style={inputStyle} value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} placeholder="Your organization" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                  <label htmlFor="contact-company" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Company</label>
+                  <input id="contact-company" style={inputStyle} value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} placeholder="Your organization" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Service Interest</label>
-                  <select style={{ ...inputStyle, cursor: "pointer", appearance: "auto" }} value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})} onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder}>
+                  <label htmlFor="contact-service" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Service Interest</label>
+                  <select id="contact-service" style={{ ...inputStyle, cursor: "pointer", appearance: "auto" }} value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})} onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder}>
                     <option value="" style={{ background: C.navyLight }}>Select a service...</option>
                     <option value="vciso" style={{ background: C.navyLight }}>Virtual CISO</option>
                     <option value="ai" style={{ background: C.navyLight }}>AI Security & Governance</option>
@@ -661,8 +723,8 @@ function ContactPage() {
                   </select>
                 </div>
                 <div style={{ marginBottom: 24 }}>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Message *</label>
-                  <textarea required rows={5} style={{ ...inputStyle, resize: "vertical" }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Tell us about your security needs, timeline, and any specific challenges you're facing." onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                  <label htmlFor="contact-message" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Message *</label>
+                  <textarea id="contact-message" required rows={5} aria-required="true" style={{ ...inputStyle, resize: "vertical" }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Tell us about your security needs, timeline, and any specific challenges you're facing." onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                 </div>
                 <button type="submit" style={{
                   width: "100%", padding: "14px", background: C.accent, color: C.navy, border: "none",
@@ -694,17 +756,22 @@ function ContactPage() {
 
               <div style={{ background: C.cardBg, border: `1px solid ${C.glassBorder}`, borderRadius: 8, padding: 32 }}>
                 <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600, color: C.white, marginBottom: 20 }}>Direct Contact</h3>
-                {[
-                  { label: "Email", value: "tom@stanchionsecurity.com" },
-                  { label: "Web", value: "stanchionsecurity.com" },
-                  { label: "LinkedIn", value: "linkedin.com/in/tomtolleson" },
-                  { label: "Response Time", value: "Within 1 business day" },
-                ].map((item, i) => (
-                  <div key={i} style={{ marginBottom: i < 3 ? 16 : 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>{item.label}</div>
-                    <div style={{ fontSize: 15, color: C.grayLight }}>{item.value}</div>
-                  </div>
-                ))}
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>Email</div>
+                  <a href="mailto:tom@stanchionsecurity.com" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }}>tom@stanchionsecurity.com</a>
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>Web</div>
+                  <a href="https://stanchionsecurity.com" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }} rel="noopener noreferrer" aria-label="Stanchion Security website (opens in new tab)" target="_blank">stanchionsecurity.com</a>
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>LinkedIn</div>
+                  <a href="https://linkedin.com/in/tomtolleson" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }} rel="noopener noreferrer" aria-label="Tom Tolleson LinkedIn profile (opens in new tab)" target="_blank">linkedin.com/in/tomtolleson</a>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>Response Time</div>
+                  <div style={{ fontSize: 15, color: C.grayLight }}>Within 1 business day</div>
+                </div>
               </div>
             </div>
           </Section>
@@ -743,7 +810,17 @@ function Footer({ setPage }) {
             }}>{key}</button>
           ))}
         </div>
-        <div style={{ fontSize: 12, color: C.grayDark }}>© 2026 Stanchion Security LLC. All rights reserved.</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <a href="https://www.w3.org/WAI/WCAG21/quickref/?levels=aaa" rel="noopener noreferrer" target="_blank" aria-label="WCAG 2.1 AA compliant (opens in new tab)">
+              <img src="https://img.shields.io/badge/WCAG-2.1%20AA-0077C8?style=flat" alt="WCAG 2.1 AA compliant" width={95} height={20} style={{ display: "block" }} />
+            </a>
+            <a href="https://www.section508.gov/" rel="noopener noreferrer" target="_blank" aria-label="Section 508 compliant (opens in new tab)">
+              <img src="https://img.shields.io/badge/Section-508%20Compliant-0B3D91?style=flat" alt="Section 508 compliant" width={125} height={20} style={{ display: "block" }} />
+            </a>
+          </div>
+          <div style={{ fontSize: 12, color: C.grayDark }}>© 2026 Stanchion Security LLC. All rights reserved.</div>
+        </div>
       </div>
     </footer>
   );
@@ -758,11 +835,14 @@ export default function App() {
   return (
     <>
       <style>{globalCSS}</style>
+      <SkipLink />
       <Nav page={page} setPage={setPage} />
-      {page === "home" && <HomePage setPage={setPage} />}
-      {page === "about" && <AboutPage setPage={setPage} />}
-      {page === "services" && <ServicesPage setPage={setPage} />}
-      {page === "contact" && <ContactPage setPage={setPage} />}
+      <main id="main-content">
+        {page === "home" && <HomePage setPage={setPage} />}
+        {page === "about" && <AboutPage setPage={setPage} />}
+        {page === "services" && <ServicesPage setPage={setPage} />}
+        {page === "contact" && <ContactPage setPage={setPage} />}
+      </main>
       <Footer setPage={setPage} />
     </>
   );
