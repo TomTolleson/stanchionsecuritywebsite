@@ -658,11 +658,47 @@ function ServicesPage({ setPage }) {
 // ═══════════════════════════════════════════
 function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", company: "", service: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState({ type: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setFormStatus({ type: "", message: "" });
+
+    const payload = {
+      name: e.target.elements.name?.value ?? formData.name,
+      email: e.target.elements.email?.value ?? formData.email,
+      company: e.target.elements.company?.value ?? formData.company,
+      phone: e.target.elements.phone?.value ?? "",
+      service: e.target.elements.service?.value ?? formData.service,
+      message: e.target.elements.message?.value ?? formData.message,
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setFormStatus({ type: "success", message: data.message });
+        setFormData({ name: "", email: "", company: "", service: "", message: "" });
+        e.target.reset();
+      } else {
+        setFormStatus({ type: "error", message: data.error || "Something went wrong. Please try again." });
+      }
+    } catch (error) {
+      setFormStatus({
+        type: "error",
+        message: "Unable to submit the form. Please email us directly at tom@stanchionsecurity.com.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputStyle = {
@@ -688,7 +724,7 @@ function ContactPage() {
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px 100px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64 }}>
           <Section>
-            {submitted ? (
+            {formStatus.type === "success" ? (
               <div style={{ background: C.cardBg, border: `1px solid ${C.accent}`, borderRadius: 8, padding: 48, textAlign: "center" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
                 <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 600, color: C.white, marginBottom: 12 }}>Message received.</h3>
@@ -699,20 +735,20 @@ function ContactPage() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
                   <div>
                     <label htmlFor="contact-name" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Name *</label>
-                    <input id="contact-name" required aria-required="true" style={inputStyle} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Your name" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                    <input id="contact-name" name="name" required aria-required="true" style={inputStyle} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Your name" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                   </div>
                   <div>
                     <label htmlFor="contact-email" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Email *</label>
-                    <input id="contact-email" required type="email" aria-required="true" style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="you@company.com" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                    <input id="contact-email" name="email" required type="email" aria-required="true" style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="you@company.com" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                   </div>
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label htmlFor="contact-company" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Company</label>
-                  <input id="contact-company" style={inputStyle} value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} placeholder="Your organization" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                  <input id="contact-company" name="company" style={inputStyle} value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} placeholder="Your organization" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label htmlFor="contact-service" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Service Interest</label>
-                  <select id="contact-service" style={{ ...inputStyle, cursor: "pointer", appearance: "auto" }} value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})} onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder}>
+                  <select id="contact-service" name="service" style={{ ...inputStyle, cursor: "pointer", appearance: "auto" }} value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})} onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder}>
                     <option value="" style={{ background: C.navyLight }}>Select a service...</option>
                     <option value="vciso" style={{ background: C.navyLight }}>Virtual CISO</option>
                     <option value="ai" style={{ background: C.navyLight }}>AI Security & Governance</option>
@@ -724,13 +760,30 @@ function ContactPage() {
                 </div>
                 <div style={{ marginBottom: 24 }}>
                   <label htmlFor="contact-message" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Message *</label>
-                  <textarea id="contact-message" required rows={5} aria-required="true" style={{ ...inputStyle, resize: "vertical" }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Tell us about your security needs, timeline, and any specific challenges you're facing." onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
+                  <textarea id="contact-message" name="message" required rows={5} aria-required="true" style={{ ...inputStyle, resize: "vertical" }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Tell us about your security needs, timeline, and any specific challenges you're facing." onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                 </div>
-                <button type="submit" style={{
+                {formStatus.type === "error" && formStatus.message && (
+                  <div
+                    role="alert"
+                    aria-live="polite"
+                    style={{
+                      marginBottom: "1rem",
+                      padding: "1rem",
+                      borderRadius: 8,
+                      backgroundColor: "rgba(198, 40, 40, 0.15)",
+                      color: "#f5c6cb",
+                      border: "1px solid rgba(245, 198, 203, 0.3)",
+                    }}
+                  >
+                    {formStatus.message}
+                  </div>
+                )}
+                <button type="submit" disabled={isSubmitting} style={{
                   width: "100%", padding: "14px", background: C.accent, color: C.navy, border: "none",
                   borderRadius: 4, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
-                  cursor: "pointer", fontFamily: "'DM Sans',sans-serif",
-                }}>Send Message</button>
+                  cursor: isSubmitting ? "wait" : "pointer", fontFamily: "'DM Sans',sans-serif",
+                  opacity: isSubmitting ? 0.8 : 1,
+                }}>{isSubmitting ? "Sending..." : "Send Message"}</button>
               </form>
             )}
           </Section>

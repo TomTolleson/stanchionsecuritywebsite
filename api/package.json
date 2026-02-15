@@ -1,0 +1,11 @@
+{
+  "name": "stanchion-api",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@azure/data-tables": "^13.2.2",
+    "@azure/identity": "^4.2.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "isomorphic-fetch": "^3.0.0"
+  }
+}
