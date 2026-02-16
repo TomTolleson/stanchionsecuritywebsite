@@ -657,7 +657,7 @@ function ServicesPage({ setPage }) {
 // CONTACT PAGE
 // ═══════════════════════════════════════════
 function ContactPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", company: "", service: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", phone: "", service: "", message: "" });
   const [formStatus, setFormStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -686,7 +686,7 @@ function ContactPage() {
 
       if (response.ok && data.success) {
         setFormStatus({ type: "success", message: data.message });
-        setFormData({ name: "", email: "", company: "", service: "", message: "" });
+        setFormData({ name: "", email: "", company: "", phone: "", service: "", message: "" });
         e.target.reset();
       } else {
         setFormStatus({ type: "error", message: data.error || "Something went wrong. Please try again." });
@@ -741,6 +741,10 @@ function ContactPage() {
                     <label htmlFor="contact-email" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Email *</label>
                     <input id="contact-email" name="email" required type="email" aria-required="true" style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="you@company.com" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                   </div>
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <label htmlFor="phone" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Phone (optional)</label>
+                  <input type="tel" id="phone" name="phone" aria-label="Phone number (optional)" style={inputStyle} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="Optional — for a faster response" onFocus={e => e.target.style.borderColor = C.accent} onBlur={e => e.target.style.borderColor = C.glassBorder} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label htmlFor="contact-company" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.grayLight, marginBottom: 8 }}>Company</label>
