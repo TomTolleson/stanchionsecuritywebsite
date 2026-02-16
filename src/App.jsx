@@ -818,6 +818,10 @@ function ContactPage() {
                   <a href="mailto:tom@stanchionsecurity.com" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }}>tom@stanchionsecurity.com</a>
                 </div>
                 <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>Phone</div>
+                  <a href="tel:+12125882920" aria-label="Phone: (212) 588-2920" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }}>(212) 588-2920</a>
+                </div>
+                <div style={{ marginBottom: 16 }}>
                   <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.accent, marginBottom: 4 }}>Web</div>
                   <a href="https://stanchionsecurity.com" style={{ fontSize: 15, color: C.grayLight, textDecoration: "underline", textUnderlineOffset: 2 }} rel="noopener noreferrer" aria-label="Stanchion Security website (opens in new tab)" target="_blank">stanchionsecurity.com</a>
                 </div>
