@@ -25,3 +25,8 @@ dist-ssr
 
 # API secrets (never commit)
 api/local.settings.json
+
+
+*-key.json
+gmail-sender-key.json
+cloud-function/gmail-sender-key.json

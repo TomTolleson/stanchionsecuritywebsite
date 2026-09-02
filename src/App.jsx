@@ -95,6 +95,7 @@ function Nav({ page, setPage }) {
     { key: "home", label: "Home" },
     { key: "about", label: "About" },
     { key: "services", label: "Services" },
+    { key: "insights", label: "Insights" },
     { key: "contact", label: "Contact" },
   ];
 
@@ -846,6 +847,223 @@ function ContactPage() {
 // ═══════════════════════════════════════════
 // FOOTER
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// INSIGHTS PAGE
+// ═══════════════════════════════════════════
+function InsightsPage({ setPage }) {
+  const navigate = (key) => { setPage(key); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+  const laws = [
+    { state: "California", bill: "SB 1120", eff: "2025", req: "AI-assisted utilization review decisions must be based on the enrollee's clinical history and individual circumstances, not group data alone." },
+    { state: "Texas", bill: "SB 815", eff: "2025", req: "AI may not be the sole basis for an adverse determination." },
+    { state: "Arizona", bill: "HB 2175", eff: "2025", req: "A health care provider must independently review a claim or prior authorization request before an insurer denial." },
+    { state: "Maryland", bill: "HB 820", eff: "2025", req: "AI used in utilization review must incorporate medical history and clinical information; quarterly reporting indicating AI use in adverse decisions." },
+    { state: "Nebraska", bill: "LB 77", eff: "2025", req: "Disclosure of AI use to both providers and enrollees." },
+    { state: "Indiana", bill: "HB 1271", eff: "Mar 2026", req: "AI may not be the sole basis for downcoding a claim without a health care professional's review of the medical record. Not limited to prior authorization." },
+    { state: "Iowa", bill: "HF 2635", eff: "Jul 2026", req: "AI permitted for initial review only. May not be the sole basis to deny, delay, or downgrade a medical necessity request; denials require a qualified reviewer or clinical peer." },
+    { state: "Washington", bill: "SB 5395", eff: "Jun 2026", req: "Among the most comprehensive. On denial, requires disclosure of the credentials, board certifications, and specialty of the provider exercising clinical oversight to both enrollee and requesting provider." },
+    { state: "Alabama", bill: "SB 63", eff: "Oct 2026", req: "Standards for underlying data sets. Annual certification to the Department of Insurance that AI tools are periodically reviewed for accuracy and applied fairly across subscriber groups." },
+    { state: "Georgia", bill: "SB 444", eff: "Jan 2027", req: "AI may not issue an adverse determination until a qualified review agent conducts review with clinical peer participation." },
+    { state: "Utah", bill: "SB 319", eff: "Jan 2027", req: "Disclosure of AI use to the Insurance Department, providers, and enrollees. Public posting of prior authorization requirements and approval and denial statistics." },
+  ];
+
+  const sections = [
+    { n: "Intake and classification", d: "What decision the system actually supports, what data it touches, and how much autonomy it holds. Risk tier assigned against consequence severity, reversibility, oversight quality, population scale, and regulatory exposure — with written rationale that survives challenge." },
+    { n: "Regulatory mapping", d: "Every applicable obligation identified by jurisdiction and line of business, then crosswalked to a named control and the evidence that demonstrates it. An obligation with no control and no evidence is an open gap." },
+    { n: "Harm analysis", d: "Who can be harmed and through what mechanism — including harms a system produces while operating exactly as designed." },
+    { n: "Control design", d: "Controls specific enough to test. Data and privacy, model behavior, decision integrity, transparency. Written so an auditor can determine pass or fail." },
+    { n: "Human oversight", d: "Whether the review the law requires is real or nominal at production volume. Covered in more detail below." },
+    { n: "Evaluation and monitoring", d: "Metrics with definitions, thresholds, owners, and cadence. Accuracy against clinical baseline, approval-rate parity, override rate, appeal overturn rate, drift." },
+    { n: "Disposition", d: "Approve, approve with conditions, approve with scope limitation, or reject — with a residual risk statement an accountable executive signs." },
+  ];
+
+  const overrideTests = [
+    "Does the reviewer see the information needed to disagree, or only the model's conclusion?",
+    "How much time does the reviewer actually have per case at production volume, computed from staffing and throughput rather than from policy?",
+    "What is the observed override rate? A rate near zero indicates rubber-stamping, not model quality.",
+    "Is there any performance consequence — explicit or cultural — to overriding frequently?",
+    "Is the override path as easy to exercise as the confirm path, or does dissent cost more clicks and more justification?",
+  ];
+
+  const cellBase = { padding: "16px 18px", verticalAlign: "top", borderBottom: `1px solid ${C.glassBorder}`, fontSize: 15, lineHeight: 1.6 };
+
+  return (
+    <div>
+      {/* Hero */}
+      <section style={{
+        padding: "160px 32px 60px",
+        background: `radial-gradient(ellipse at 30% 40%, rgba(28,52,80,0.5) 0%, transparent 60%), ${C.bg}`,
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <Section>
+            <SectionHeading
+              label="Insights"
+              title="Governing AI in Utilization Review"
+              subtitle="Eleven states now regulate how health insurers use AI in prior authorization and claims review. Most organizations deploying these systems have not mapped what applies to them."
+              level={1}
+            />
+          </Section>
+        </div>
+      </section>
+
+      {/* Opening argument */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px 72px" }}>
+        <Section>
+          <div style={{ maxWidth: 720 }}>
+            <p style={{ fontSize: 18, lineHeight: 1.8, color: C.offWhite, marginBottom: 20 }}>
+              Health plans and carriers are deploying AI into utilization review faster than they are building the governance to support it. The regulatory response has been quick and unusually specific: rather than general AI principles, states have written rules about who must review a denial, what data a determination may rest on, and what has to be disclosed to whom.
+            </p>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.gray, marginBottom: 20 }}>
+              The NAIC model bulletin on insurer AI use has been adopted as guidance in more than 25 states, establishing that consumer-facing decisions supported by AI must comply with existing insurance law, including protections against unfair trade practices and illegal discrimination. CMS has set separate guardrails for Medicare Advantage prior authorization.
+            </p>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.gray }}>
+              What follows is the current state landscape, the structure Stanchion uses to assess a single AI use case against it, and the question we find most organizations have not asked.
+            </p>
+          </div>
+        </Section>
+      </section>
+
+      {/* State law table */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px 80px" }}>
+        <Section>
+          <SectionHeading label="Regulatory landscape" title="State Law on AI in Prior Authorization" />
+          <div style={{ overflowX: "auto", border: `1px solid ${C.glassBorder}`, borderRadius: 6, background: C.cardBg }}>
+            <table style={{ width: "100%", minWidth: 720, borderCollapse: "collapse", textAlign: "left" }}>
+              <caption style={{ captionSide: "bottom", padding: "16px 18px", fontSize: 13, color: C.grayDark, textAlign: "left", lineHeight: 1.6 }}>
+                Enacted laws governing AI in utilization review and prior authorization, current as of September 2026. Effective dates and statutory text change frequently — verify with counsel before relying on any entry.
+              </caption>
+              <thead>
+                <tr>
+                  {["State", "Bill", "Effective", "Core requirement"].map((h) => (
+                    <th key={h} scope="col" style={{
+                      ...cellBase,
+                      fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600,
+                      letterSpacing: 2, textTransform: "uppercase", color: C.accent,
+                      borderBottom: `1px solid ${C.accentDim}`, whiteSpace: "nowrap",
+                    }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {laws.map((l) => (
+                  <tr key={l.state}>
+                    <th scope="row" style={{ ...cellBase, color: C.white, fontWeight: 600, whiteSpace: "nowrap" }}>{l.state}</th>
+                    <td style={{ ...cellBase, color: C.grayLight, whiteSpace: "nowrap" }}>{l.bill}</td>
+                    <td style={{ ...cellBase, color: C.grayLight, whiteSpace: "nowrap" }}>{l.eff}</td>
+                    <td style={{ ...cellBase, color: C.gray, minWidth: 340 }}>{l.req}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+      </section>
+
+      {/* Methodology */}
+      <section style={{ background: C.navyMid, padding: "80px 32px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <Section>
+            <SectionHeading
+              label="Methodology"
+              title="How We Assess a Use Case"
+              subtitle="A single AI use case, assessed in two to three weeks, producing a decision document rather than a research paper. Aligned to the NIST AI Risk Management Framework and ISO/IEC 42001."
+            />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 24 }}>
+              {sections.map((s, i) => (
+                <div key={s.n} style={{
+                  background: C.cardBg, border: `1px solid ${C.glassBorder}`,
+                  borderRadius: 6, padding: "26px 24px",
+                }}>
+                  <div style={{
+                    fontFamily: "'Cormorant Garamond',serif", fontSize: 15, fontWeight: 700,
+                    color: C.accent, marginBottom: 10,
+                  }}>{String(i + 1).padStart(2, "0")}</div>
+                  <h3 style={{
+                    fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600,
+                    color: C.white, marginBottom: 10, lineHeight: 1.25,
+                  }}>{s.n}</h3>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: C.gray }}>{s.d}</p>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </div>
+      </section>
+
+      {/* The override question */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 32px" }}>
+        <Section>
+          <div style={{ maxWidth: 760 }}>
+            <SectionHeading label="The question most organizations miss" title="Is the Human Review Real?" />
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.offWhite, marginBottom: 20 }}>
+              Nearly every law above requires a qualified human in the loop before an adverse determination. Nearly every one of those requirements can be satisfied on paper and defeated in practice — not by bad faith, but by volume. A reviewer with ninety seconds per case and a screen showing only the model's conclusion is not exercising independent medical judgment, whatever the policy document says.
+            </p>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.gray, marginBottom: 32 }}>
+              This is where a compliance review and a governance assessment diverge. Compliance asks whether a reviewer exists. Governance asks whether that reviewer can meaningfully disagree.
+            </p>
+
+            <div style={{
+              borderLeft: `2px solid ${C.accent}`, paddingLeft: 26,
+              display: "flex", flexDirection: "column", gap: 16,
+            }}>
+              {overrideTests.map((t) => (
+                <p key={t} style={{ fontSize: 16, lineHeight: 1.7, color: C.grayLight, margin: 0 }}>{t}</p>
+              ))}
+            </div>
+
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.gray, marginTop: 32 }}>
+              The most useful number in any assessment we produce is the observed time per case at production volume, derived from staffing and throughput rather than from policy. It converts an abstract concern into a finding an executive has to answer.
+            </p>
+          </div>
+        </Section>
+      </section>
+
+      {/* Download + CTA */}
+      <section style={{ background: C.navyMid, padding: "72px 32px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+          <Section>
+            <GoldLine width={60} style={{ margin: "0 auto 20px" }} />
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(26px,3.6vw,38px)",
+              fontWeight: 600, color: C.white, marginBottom: 16, lineHeight: 1.25,
+            }}>
+              The full assessment methodology
+            </h2>
+            <p style={{ fontSize: 17, lineHeight: 1.8, color: C.gray, maxWidth: 620, margin: "0 auto 32px" }}>
+              The complete template — intake, risk tiering, regulatory crosswalk, control catalog, human oversight specification, monitoring plan, and disposition — is published in full.
+            </p>
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+              <a
+                href="/Stanchion-AI-Risk-Assessment-Methodology.docx"
+                download
+                style={{
+                  display: "inline-block", padding: "15px 32px", background: C.accent,
+                  color: C.navy, fontWeight: 700, fontSize: 15, textDecoration: "none",
+                  borderRadius: 4, letterSpacing: 0.4,
+                }}
+              >
+                Download the methodology
+              </a>
+              <button
+                type="button"
+                onClick={() => navigate("contact")}
+                style={{
+                  padding: "15px 32px", background: "transparent", color: C.accent,
+                  border: `1px solid ${C.accent}`, fontWeight: 600, fontSize: 15,
+                  borderRadius: 4, cursor: "pointer", fontFamily: "'DM Sans',sans-serif",
+                  letterSpacing: 0.4,
+                }}
+              >
+                Discuss a use case
+              </button>
+            </div>
+          </Section>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function Footer({ setPage }) {
   const navigate = (key) => { setPage(key); window.scrollTo({ top: 0, behavior: "smooth" }); };
   return (
@@ -902,6 +1120,7 @@ export default function App() {
         {page === "home" && <HomePage setPage={setPage} />}
         {page === "about" && <AboutPage setPage={setPage} />}
         {page === "services" && <ServicesPage setPage={setPage} />}
+        {page === "insights" && <InsightsPage setPage={setPage} />}
         {page === "contact" && <ContactPage setPage={setPage} />}
       </main>
       <Footer setPage={setPage} />
